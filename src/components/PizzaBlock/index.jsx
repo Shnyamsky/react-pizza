@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 function PizzaBlock({ id, imageUrl, title, types, sizes, price, category, rating }) {
-  const typeNames = ['тонкое', 'традиционное']
-  const [activeSize, setActiveSize] = useState(0)
-  const [activeType, setActiveType] = useState(0)
+  const typeNames = ['тонкое', 'традиционное'];
+  const [activeSize, setActiveSize] = useState(0);
+  const [activeType, setActiveType] = useState(0);
 
   return (
     <div className="pizza-block">
@@ -50,7 +50,7 @@ function PizzaBlock({ id, imageUrl, title, types, sizes, price, category, rating
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default PizzaBlock
+export default PizzaBlock;
