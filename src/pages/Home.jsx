@@ -1,4 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
+
+import { useSelector } from 'react-redux';
+
 import { SearchContext } from '../App';
 
 import Categories from '../components/Categories';
@@ -8,17 +11,13 @@ import Sort from '../components/Sort';
 import Pagination from '../components/Pagination';
 
 const Home = () => {
+  const { categoryId, sort } = useSelector((state) => state.filter);
+
   const { searchValue } = useContext(SearchContext);
 
   const [items, setItems] = useState([]);
   const [isLoading, setIsloading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [categoryId, setCategoryId] = useState(0);
-  const [sortType, setSortType] = useState({
-    name: 'популярности (убыв)',
-    sortProperty: '-rating',
-  });
 
   useEffect(() => {
     async function fetchData() {
@@ -26,8 +25,8 @@ const Home = () => {
         setIsloading(true);
         const category = categoryId > 0 ? `category=${categoryId}` : '';
         const searchItems = searchValue ? `search=${searchValue}` : '';
-        const sortBy = sortType.sortProperty.replace('-', '');
-        const order = sortType.sortProperty.includes('-') ? 'desc' : 'asc';
+        const sortBy = sort.sortProperty.replace('-', '');
+        const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
 
         await fetch(
           `https://62e016ec98dd9c9df60d8371.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}&${searchItems}`,
@@ -44,7 +43,7 @@ const Home = () => {
     }
     fetchData();
     window.scrollTo(0, 0);
-  }, [currentPage, searchValue, categoryId, sortType]);
+  }, [currentPage, searchValue, categoryId, sort]);
 
   const renderItems = () => {
     // const filteredItems = items.filter((item) =>
@@ -58,8 +57,8 @@ const Home = () => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories categoryId={categoryId} onClickCategory={(id) => setCategoryId(id)} />
-        <Sort sortType={sortType} onChangeSort={(obj) => setSortType(obj)} />
+        <Categories />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{renderItems()}</div>
