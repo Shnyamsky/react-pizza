@@ -1,7 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
+import axios from 'axios';
+import qs from 'qs';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFilters } from '../redux/slices/filterSlice';
 
-import { useSelector } from 'react-redux';
-
+import { sortList } from '../components/Sort';
 import { SearchContext } from '../App';
 
 import Categories from '../components/Categories';
@@ -11,38 +15,72 @@ import Sort from '../components/Sort';
 import Pagination from '../components/Pagination';
 
 const Home = () => {
-  const { categoryId, sort } = useSelector((state) => state.filter);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isSearch = useRef(false);
+  const isMounted = useRef(false);
 
+  const { categoryId, sort, currentPage } = useSelector((state) => state.filter);
   const { searchValue } = useContext(SearchContext);
-
   const [items, setItems] = useState([]);
   const [isLoading, setIsloading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setIsloading(true);
-        const category = categoryId > 0 ? `category=${categoryId}` : '';
-        const searchItems = searchValue ? `search=${searchValue}` : '';
-        const sortBy = sort.sortProperty.replace('-', '');
-        const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
+  const fetchData = async () => {
+    try {
+      setIsloading(true);
+      const category = categoryId > 0 ? `category=${categoryId}` : '';
+      const searchItems = searchValue ? `search=${searchValue}` : '';
+      const sortBy = sort.sortProperty.replace('-', '');
+      const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
 
-        await fetch(
+      await axios
+        .get(
           `https://62e016ec98dd9c9df60d8371.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}&${searchItems}`,
         )
-          .then((res) => res.json())
-          .then((json) => {
-            setItems(json);
-            setIsloading(false);
-          });
-      } catch (error) {
-        alert('Не удалось загрузить данные');
-        console.error(error);
-      }
+        .then((res) => {
+          setItems(res.data);
+          setIsloading(false);
+        });
+    } catch (error) {
+      alert('Не удалось загрузить данные');
+      console.error(error);
     }
-    fetchData();
+  };
+
+  //navigate dependency?
+  useEffect(() => {
+    if (isMounted.current) {
+      const queryString = qs.stringify({
+        sortProperty: sort.sortProperty,
+        categoryId,
+        currentPage,
+      });
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true;
+  }, [currentPage, categoryId, sort]);
+
+  //useSearchParams (react-router-dom)?
+  useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      const sort = sortList.find((sortItem) => sortItem.sortProperty === params.sortProperty);
+      dispatch(
+        setFilters({
+          ...params,
+          sort,
+        }),
+      );
+      isSearch.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
+    if (!isSearch.current) {
+      fetchData();
+    }
+    isSearch.current = false;
   }, [currentPage, searchValue, categoryId, sort]);
 
   const renderItems = () => {
@@ -62,7 +100,7 @@ const Home = () => {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{renderItems()}</div>
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination />
     </div>
   );
 };
