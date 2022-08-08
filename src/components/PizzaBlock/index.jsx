@@ -6,8 +6,15 @@ const typeNames = ['тонкое', 'традиционное'];
 
 function PizzaBlock({ id, imageUrl, title, types, sizes, price, category, rating }) {
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) => state.cart.items.find((item) => item.id === id));
-  const addedCount = cartItem ? cartItem.count : 0;
+
+  // const cartItem = useSelector((state) => state.cart.items.find((item) => item.id === id));
+  // const addedCount = cartItem ? cartItem.count : 0;
+  const cartItem = useSelector((state) => state.cart.items.filter((item) => item.id === id));
+  const addedCount = cartItem
+    ? cartItem.reduce((sum, item) => {
+        return sum + item.count;
+      }, 0)
+    : 0;
 
   const onClickAdd = () => {
     const item = {

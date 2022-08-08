@@ -88,8 +88,8 @@ const Cart = () => {
           </div>
         </div>
         <div className="content__items">
-          {items.map((item) => (
-            <CartItem key={item.id} {...item} />
+          {items.map((item, index) => (
+            <CartItem key={item.id * index} {...item} />
           ))}
         </div>
         <div className="cart__bottom">
