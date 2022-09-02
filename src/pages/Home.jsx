@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React, { useContext, useEffect, useRef } from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFilters } from '../redux/slices/filterSlice';
+import { fetchPizzas } from '../redux/slices/pizzaSlice';
 
 import { sortList } from '../components/Sort';
 import { SearchContext } from '../App';
@@ -21,30 +21,24 @@ const Home = () => {
   const isMounted = useRef(false);
 
   const { categoryId, sort, currentPage } = useSelector((state) => state.filter);
+  const { status, items } = useSelector((state) => state.pizza);
   const { searchValue } = useContext(SearchContext);
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsloading] = useState(true);
 
   const fetchData = async () => {
-    try {
-      setIsloading(true);
-      const category = categoryId > 0 ? `category=${categoryId}` : '';
-      const searchItems = searchValue ? `search=${searchValue}` : '';
-      const sortBy = sort.sortProperty.replace('-', '');
-      const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
+    const category = categoryId > 0 ? `category=${categoryId}` : '';
+    const searchItems = searchValue ? `search=${searchValue}` : '';
+    const sortBy = sort.sortProperty.replace('-', '');
+    const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
 
-      await axios
-        .get(
-          `https://62e016ec98dd9c9df60d8371.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}&${searchItems}`,
-        )
-        .then((res) => {
-          setItems(res.data);
-          setIsloading(false);
-        });
-    } catch (error) {
-      alert('Не удалось загрузить данные');
-      console.error(error);
-    }
+    dispatch(
+      fetchPizzas({
+        currentPage,
+        category,
+        searchItems,
+        sortBy,
+        order,
+      }),
+    );
   };
 
   //navigate dependency?
@@ -87,7 +81,7 @@ const Home = () => {
     // const filteredItems = items.filter((item) =>
     //   item.title.toLowerCase().includes(searchValue.toLowerCase()),
     // );
-    return isLoading
+    return status === 'loading'
       ? [...new Array(4)].map((_, index) => <Skeleton key={index} />)
       : items.map((item) => <PizzaBlock key={item.id} {...item} />);
   };
@@ -99,7 +93,16 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{renderItems()}</div>
+      {status === 'error' ? (
+        <div className="content__error-info">
+          <h2>
+            Произошла ошибка <icon>😕</icon>
+          </h2>
+          <p>Повторите попытку позже</p>
+        </div>
+      ) : (
+        <div className="content__items">{renderItems()}</div>
+      )}
       <Pagination />
     </div>
   );
