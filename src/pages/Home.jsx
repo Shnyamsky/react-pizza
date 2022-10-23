@@ -6,7 +6,6 @@ import { setFilters } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzaSlice';
 
 import { sortList } from '../components/Sort';
-import { SearchContext } from '../App';
 
 import Categories from '../components/Categories';
 import PizzaBlock from '../components/PizzaBlock';
@@ -20,9 +19,8 @@ const Home = () => {
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
-  const { categoryId, sort, currentPage } = useSelector((state) => state.filter);
+  const { searchValue, categoryId, sort, currentPage } = useSelector((state) => state.filter);
   const { status, items } = useSelector((state) => state.pizza);
-  const { searchValue } = useContext(SearchContext);
 
   const fetchData = async () => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
