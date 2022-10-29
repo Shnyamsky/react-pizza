@@ -3,9 +3,29 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItem, selecCartItemById } from '../../redux/slices/cartSlice';
 
+type PizzaBlockProps = {
+  id: string;
+  imageUrl: string;
+  title: string;
+  types: number[];
+  sizes: number[];
+  price: number;
+  category: number;
+  rating: number;
+};
+
 const typeNames = ['тонкое', 'традиционное'];
 
-function PizzaBlock({ id, imageUrl, title, types, sizes, price, category, rating }) {
+const PizzaBlock: React.FC<PizzaBlockProps> = ({
+  id,
+  imageUrl,
+  title,
+  types,
+  sizes,
+  price,
+  category,
+  rating,
+}) => {
   const dispatch = useDispatch();
   const cartItem = useSelector(selecCartItemById(id));
   // Note
@@ -76,6 +96,6 @@ function PizzaBlock({ id, imageUrl, title, types, sizes, price, category, rating
       </div>
     </div>
   );
-}
+};
 
 export default PizzaBlock;

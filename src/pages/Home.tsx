@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,14 +13,14 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
 import Sort from '../components/Sort';
 import Pagination from '../components/Pagination';
 
-const Home = () => {
+const Home: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isSearch = useRef(false);
   const isMounted = useRef(false);
 
-  const { searchValue, categoryId, sort, currentPage } = useSelector((state) => state.filter);
-  const { status, items } = useSelector((state) => state.pizza);
+  const { searchValue, categoryId, sort, currentPage } = useSelector((state: any) => state.filter);
+  const { status, items } = useSelector((state: any) => state.pizza);
 
   const fetchData = async () => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
@@ -29,6 +29,7 @@ const Home = () => {
     const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
 
     dispatch(
+      // @ts-ignore
       fetchPizzas({
         currentPage,
         category,
@@ -81,7 +82,7 @@ const Home = () => {
     // );
     return status === 'loading'
       ? [...new Array(4)].map((_, index) => <Skeleton key={index} />)
-      : items.map((item) => <PizzaBlock key={item.id} {...item} />);
+      : items.map((item: any) => <PizzaBlock key={item.id} {...item} />);
   };
 
   return (
@@ -94,7 +95,7 @@ const Home = () => {
       {status === 'error' ? (
         <div className="content__error-info">
           <h2>
-            Произошла ошибка <icon>😕</icon>
+            Произошла ошибка <span>😕</span>
           </h2>
           <p>Повторите попытку позже</p>
         </div>
