@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState, useContext } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import debounce from 'lodash.debounce';
 
 import { useDispatch } from 'react-redux';
@@ -9,7 +9,7 @@ import styles from './Search.module.scss';
 const Search: React.FC = () => {
   const dispatch = useDispatch();
 
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   //check useMemo
@@ -27,7 +27,7 @@ const Search: React.FC = () => {
     inputRef.current?.focus();
   };
 
-  const onChangeInput = (event: any) => {
+  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     updateSearchValue(event.target.value);
   };

@@ -16,8 +16,8 @@ import Pagination from '../components/Pagination';
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isSearch = useRef(false);
-  const isMounted = useRef(false);
+  const isSearch = useRef<boolean>(false);
+  const isMounted = useRef<boolean>(false);
 
   const { searchValue, categoryId, sort, currentPage } = useSelector((state: any) => state.filter);
   const { status, items } = useSelector((state: any) => state.pizza);

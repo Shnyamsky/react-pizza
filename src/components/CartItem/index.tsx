@@ -10,6 +10,8 @@ type CartItemProps = {
   size: number;
   price: number;
   count: number;
+  // Note: optional prop (?)
+  prop?: string;
 };
 
 const CartItem: React.FC<CartItemProps> = ({ id, imageUrl, title, type, size, price, count }) => {
