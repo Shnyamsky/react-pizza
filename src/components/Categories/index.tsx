@@ -1,12 +1,13 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { setCategoryId } from '../../redux/slices/filterSlice';
+import { RootState, useAppDispatch } from '../../redux/store';
 
 const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 
 const Categories: React.FC = () => {
-  const categoryId = useSelector((state: any) => state.filter.categoryId);
-  const dispatch = useDispatch();
+  const categoryId = useSelector((state: RootState) => state.filter.categoryId);
+  const dispatch = useAppDispatch();
 
   // Note: if it's in Props: onChangeCategory: (arg: number) => void
   const onChangeCategory = (index: number) => {
