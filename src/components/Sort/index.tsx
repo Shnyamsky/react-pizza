@@ -23,7 +23,7 @@ export const sortList: SortType[] = [
   { name: 'алфавиту', sortProperty: SortPropertyEnum.TITLE_ASC },
 ];
 
-const Sort: React.FC = () => {
+const Sort: React.FC = React.memo(() => {
   const sortRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -80,6 +80,6 @@ const Sort: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default Sort;

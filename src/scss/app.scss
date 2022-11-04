@@ -212,6 +212,28 @@ body {
             display: none;
           }
         }
+
+        // &disabled { - if we're using attribute
+        &--disabled {
+          opacity: 0.3;
+          border-color: #777;
+
+          &:active {
+            transform: none;
+          }
+
+          &:hover {
+            background-color: transparent;
+
+            svg path {
+              fill: #777;
+            }
+          }
+
+          svg path {
+            fill: #777;
+          }
+        }
       }
 
       b {
