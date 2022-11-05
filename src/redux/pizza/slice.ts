@@ -4,7 +4,6 @@ import { fetchPizzas } from './asyncActions';
 import { PizzaItem } from './types';
 import { Status } from './types';
 import { PizzaSliceState } from './types';
-import { SearchPizzaParams } from './types';
 
 const initialState: PizzaSliceState = {
   status: Status.LOADING,

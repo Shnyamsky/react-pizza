@@ -21,7 +21,7 @@ const FullPizza: React.FC = () => {
         navigate('/');
       }
     })();
-  }, []);
+  }, [id, navigate]);
 
   if (!data) {
     return (
@@ -39,7 +39,7 @@ const FullPizza: React.FC = () => {
           Number(data.price),
         )}
       </h3>
-      <img src={data.imageUrl} alt="picture" />
+      <img src={data.imageUrl} alt="pizza" />
     </div>
   );
 };

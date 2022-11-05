@@ -1,13 +1,26 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import Loadable from 'react-loadable';
+
+import './scss/app.scss';
 
 import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import Cart from './pages/Cart';
-import FullPizza from './pages/FullPizza';
 
-import './scss/app.scss';
+const Cart = Loadable({
+  loader: () => import(/* webpackChunkName: "Cart" */ './pages/Cart'),
+  loading: () => <div>Загрузка корзины...</div>,
+});
+
+// NOTE: Lazy-loading only on client and export default
+const FullPizza = React.lazy(() => import(/* webpackChunkName: "FullPizza" */ './pages/FullPizza'));
+
+// NOTE: not export default (sloution)
+const NotFound = React.lazy(() =>
+  import(/* webpackChunkName: "NotFound" */ './pages/NotFound').then((m) => ({
+    default: m.NotFound,
+  })),
+);
 
 const App: React.FC = () => {
   return (
@@ -15,8 +28,22 @@ const App: React.FC = () => {
       <Route path="/" element={<MainLayout />}>
         <Route path="" element={<Home />} />
         <Route path="cart" element={<Cart />} />
-        <Route path="pizza/:id" element={<FullPizza />} />
-        <Route path="*" element={<NotFound />} />
+        <Route
+          path="pizza/:id"
+          element={
+            <Suspense fallback={<div>Загрузка пиццы...</div>}>
+              <FullPizza />
+            </Suspense>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={<div>Загрузка...</div>}>
+              <NotFound />
+            </Suspense>
+          }
+        />
       </Route>
     </Routes>
   );
