@@ -1,7 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { setCategoryId } from '../../redux/slices/filterSlice';
+
 import { RootState, useAppDispatch } from '../../redux/store';
+import { useSelector } from 'react-redux';
+import { setCategoryId } from '../../redux/filter/slice';
 
 const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
 

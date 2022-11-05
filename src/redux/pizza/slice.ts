@@ -1,68 +1,15 @@
-import axios from 'axios';
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchPizzas } from './asyncActions';
 
-// NOTE: if all fields have a string type: ... = Record<string, string> (Record<key, value>)
-export type FetchPizzas = {
-  currentPage: number;
-  category: string;
-  searchItems: string;
-  sortBy: string;
-  order: 'asc' | 'desc';
-};
-
-type PizzaItem = {
-  id: string;
-  imageUrl: string;
-  title: string;
-  types: number[];
-  sizes: number[];
-  price: number;
-  category: number;
-  rating: number;
-};
-
-export enum Status {
-  LOADING = 'loading',
-  SUCCESS = 'success',
-  ERROR = 'error',
-}
-
-interface PizzaSliceState {
-  status: Status;
-  items: PizzaItem[];
-}
-
-export type SearchPizzaParams = {
-  currentPage: string;
-  category: string;
-  searchItems: string;
-  sortBy: string;
-  order: string;
-};
+import { PizzaItem } from './types';
+import { Status } from './types';
+import { PizzaSliceState } from './types';
+import { SearchPizzaParams } from './types';
 
 const initialState: PizzaSliceState = {
   status: Status.LOADING,
   items: [],
 };
-
-export const fetchPizzas = createAsyncThunk<PizzaItem[], SearchPizzaParams>(
-  'pizza/fetchPizzaStatus',
-  async (filters /*, thunkAPI*/) => {
-    const { currentPage, category, searchItems, sortBy, order } = filters;
-    const { data } = await axios.get<PizzaItem[]>(
-      `https://62e016ec98dd9c9df60d8371.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}&${searchItems}`,
-    );
-
-    //NOTE: check it!
-    // if (!data.length) {
-    //   return thunkAPI.rejectWithValue('Пицц нет...');
-    // }
-    // return thunkAPI.fulfillWithValue(data);
-
-    return data;
-  },
-);
 
 const pizzaSlice = createSlice({
   name: 'pizza',
@@ -109,8 +56,6 @@ const pizzaSlice = createSlice({
   //   },
   // },
 });
-
-export const selectPizza = (state: RootState) => state.filter.sort;
 
 export const { setItems } = pizzaSlice.actions;
 
